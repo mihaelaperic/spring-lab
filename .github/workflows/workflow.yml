@@ -12,9 +12,9 @@ env:
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
 
 jobs:
-  deploy:    
+  deploy:
     runs-on: ubuntu-latest
-	steps:
+    steps:
     -  name: "Start deploy job"
        run: | 
          echo "Starting the deploy job."
