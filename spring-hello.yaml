@@ -1,0 +1,43 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbhello
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sbhello
+  template:
+    metadata:
+      labels:
+        app: sbhello
+    spec:
+      containers:
+      - name: sbhello
+        image: fra.ocir.io/frbclquc7alv/spring-hello/hello-world-lab:latest
+        imagePullPolicy: Always
+        ports:
+        - name: sbhello
+          containerPort: 8080
+          protocol: TCP
+      imagePullSecrets:
+      - name: ocirsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbhello-lb
+  labels:
+    app: sbhello
+  annotations:
+    service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+    app: sbhello
+

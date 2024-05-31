@@ -1,0 +1,32 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - master
+env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+
+
+jobs:
+  deploy:    
+    runs-on: ubuntu-latest
+	steps:
+    -  name: "Start deploy job"
+       run: | 
+         echo "Starting the deploy job."
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure Kubectl
+      uses: oracle-actions/configure-kubectl-oke@v1.3.2
+      id: kubectl-oke-action
+      with:
+        cluster: ${{ secrets.OKE_CLUSTER_OCID }}
+    - name: Run Kubectl 
+      run: kubectl apply -f spring-hello.yaml
+
